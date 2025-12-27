@@ -69,11 +69,5 @@ Obsah by měl být:
 
 # Spodní informace
 st.sidebar.markdown("---")
-st.sidebar.info(
-    """💡 Tip: Pro použití této aplikace potřebuješ OpenAI API klíč.
-    
-    Přidej ho do Streamlit Secrets:
-    ```
-    OPENAI_API_KEY=tvuj-api-klic
-    ```"""
+
 )
