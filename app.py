@@ -1,13 +1,9 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 import os
-from dotenv import load_dotenv
 
-# Načtení .env souboru
-load_dotenv()
-
-# Nastavení API klíče z prostředí
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Inicializace OpenAI klienta
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Nadpis aplikace
 st.title("🤖 AI Content Generator")
@@ -30,24 +26,24 @@ length = st.slider("Délka (slova):", 50, 500, 150)
 if st.button("Generuj obsah", type="primary"):
     if not topic:
         st.warning("Prosím zadej téma!")
-    elif not openai.api_key:
-        st.error("API klíč není nastaven! Přidej ho do .env souboru.")
+    elif not os.getenv("OPENAI_API_KEY"):
+        st.error("API klíč není nastaven! Přidej ho do Streamlit Secrets.")
     else:
         with st.spinner("Generuji obsah..."):
             try:
                 # Vytvoření promptu
                 prompt = f"""Vytvoř {content_type} na téma: {topic}
-                Tón: {tone}
-                Délka: přibližně {length} slov
+Tón: {tone}
+Délka: přibližně {length} slov
+
+Obsah by měl být:
+- Poutavý a atraktivní
+- Optimalizovaný pro danou platformu
+- Obsahovat relevantní hashtagy (pokud je to vhodné)
+"""
                 
-                Obsah by měl být:
-                - Poutavý a atraktivní
-                - Optimalizovaný pro danou platformu
-                - Obsahovat relevantní hashtagy (pokud je to vhodné)
-                """
-                
-                # Volání OpenAI API
-                response = openai.ChatCompletion.create(
+                # Volání OpenAI API (nová verze)
+                response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
                         {"role": "system", "content": "Jsi expert na tvorbu digitálního obsahu a copywriting."},
@@ -69,14 +65,14 @@ if st.button("Generuj obsah", type="primary"):
                 
             except Exception as e:
                 st.error(f"Chyba při generování: {str(e)}")
-                st.info("Zkontroluj, zda máš správně nastavený API klíč v .env souboru.")
+                st.info("Zkontroluj, zda máš správně nastavený API klíč v Streamlit Secrets.")
 
 # Spodní informace
 st.sidebar.markdown("---")
 st.sidebar.info(
     """💡 Tip: Pro použití této aplikace potřebuješ OpenAI API klíč.
     
-    Přidej ho do souboru .env:
+    Přidej ho do Streamlit Secrets:
     ```
     OPENAI_API_KEY=tvuj-api-klic
     ```"""
