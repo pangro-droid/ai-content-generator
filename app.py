@@ -69,5 +69,3 @@ Obsah by měl být:
 
 # Spodní informace
 st.sidebar.markdown("---")
-
-)
